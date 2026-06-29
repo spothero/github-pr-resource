@@ -145,6 +145,23 @@ func TestPut(t *testing.T) {
 		},
 
 		{
+			description: "we can add a label to the pull request",
+			source: resource.Source{
+				Repository:  "itsdalmo/test-repository",
+				AccessToken: "oauthtoken",
+			},
+			version: resource.Version{
+				PR:            "pr1",
+				Commit:        "commit1",
+				CommittedDate: time.Time{},
+			},
+			parameters: resource.PutParameters{
+				Label: "ready",
+			},
+			pullRequest: createTestPR(1, "master", false, false, 0, nil, false, githubv4.PullRequestStateOpen),
+		},
+
+		{
 			description: "we can delete previous comments made on the pull request",
 			source: resource.Source{
 				Repository:  "itsdalmo/test-repository",
@@ -205,6 +222,14 @@ func TestPut(t *testing.T) {
 					pr, comment := github.PostCommentArgsForCall(0)
 					assert.Equal(t, tc.version.PR, pr)
 					assert.Equal(t, tc.parameters.Comment, comment)
+				}
+			}
+
+			if tc.parameters.Label != "" {
+				if assert.Equal(t, 1, github.AddLabelCallCount()) {
+					pr, label := github.AddLabelArgsForCall(0)
+					assert.Equal(t, tc.version.PR, pr)
+					assert.Equal(t, tc.parameters.Label, label)
 				}
 			}
 

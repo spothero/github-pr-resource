@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 vars:
   BUILD_DIR: build
@@ -6,8 +6,10 @@ vars:
 
 tasks:
   default:
+    desc: List available tasks
+    silent: true
     cmds:
-      - task: test
+    - task --list-all
 
   generate:
     desc: Generate test fakes
@@ -51,6 +53,7 @@ tasks:
       vars: {BINARY: out}
 
   go-build:
+    desc: Build one resource binary. Requires BINARY.
     cmds:
     - go build -o {{.BUILD_DIR}}/{{.BINARY}}{{exeExt}} -ldflags="-s -w" -v cmd/{{.BINARY}}/main.go
     env:

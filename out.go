@@ -85,6 +85,14 @@ func Put(request PutRequest, manager Github, inputDir string) (*PutResponse, err
 		}
 	}
 
+	// Set label if specified
+	if p := request.Params; p.Label != "" {
+		err = manager.AddLabel(version.PR, p.Label)
+		if err != nil {
+			return nil, fmt.Errorf("failed to add label: %s", err)
+		}
+	}
+
 	return &PutResponse{
 		Version:  version,
 		Metadata: metadata,
@@ -114,6 +122,7 @@ type PutParameters struct {
 	Status                 string `json:"status"`
 	CommentFile            string `json:"comment_file"`
 	Comment                string `json:"comment"`
+	Label                  string `json:"label"`
 	DeletePreviousComments bool   `json:"delete_previous_comments"`
 }
 
