@@ -18,6 +18,7 @@ import (
 )
 
 // Github for testing purposes.
+//
 //go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -o fakes/fake_github.go . Github
 type Github interface {
 	ListPullRequests([]githubv4.PullRequestState) ([]*PullRequest, error)
@@ -27,6 +28,7 @@ type Github interface {
 	GetChangedFiles(string, string) ([]ChangedFileObject, error)
 	UpdateCommitStatus(string, string, string, string, string, string) error
 	DeletePreviousComments(string) error
+	AddLabel(string, string) error
 }
 
 // GithubClient for handling requests to the Github V3 and V4 APIs.
@@ -215,6 +217,23 @@ func (m *GithubClient) PostComment(prNumber, comment string) error {
 		&github.IssueComment{
 			Body: github.String(comment),
 		},
+	)
+	return err
+}
+
+// AddLabel to a pull request or issue.
+func (m *GithubClient) AddLabel(prNumber, label string) error {
+	pr, err := strconv.Atoi(prNumber)
+	if err != nil {
+		return fmt.Errorf("failed to convert pull request number to int: %s", err)
+	}
+
+	_, _, err = m.V3.Issues.AddLabelsToIssue(
+		context.TODO(),
+		m.Owner,
+		m.Repository,
+		pr,
+		[]string{label},
 	)
 	return err
 }

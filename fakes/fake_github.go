@@ -9,6 +9,18 @@ import (
 )
 
 type FakeGithub struct {
+	AddLabelStub        func(string, string) error
+	addLabelMutex       sync.RWMutex
+	addLabelArgsForCall []struct {
+		arg1 string
+		arg2 string
+	}
+	addLabelReturns struct {
+		result1 error
+	}
+	addLabelReturnsOnCall map[int]struct {
+		result1 error
+	}
 	DeletePreviousCommentsStub        func(string) error
 	deletePreviousCommentsMutex       sync.RWMutex
 	deletePreviousCommentsArgsForCall []struct {
@@ -104,6 +116,67 @@ type FakeGithub struct {
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
+}
+
+func (fake *FakeGithub) AddLabel(arg1 string, arg2 string) error {
+	fake.addLabelMutex.Lock()
+	ret, specificReturn := fake.addLabelReturnsOnCall[len(fake.addLabelArgsForCall)]
+	fake.addLabelArgsForCall = append(fake.addLabelArgsForCall, struct {
+		arg1 string
+		arg2 string
+	}{arg1, arg2})
+	fake.recordInvocation("AddLabel", []interface{}{arg1, arg2})
+	fake.addLabelMutex.Unlock()
+	if fake.AddLabelStub != nil {
+		return fake.AddLabelStub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.addLabelReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakeGithub) AddLabelCallCount() int {
+	fake.addLabelMutex.RLock()
+	defer fake.addLabelMutex.RUnlock()
+	return len(fake.addLabelArgsForCall)
+}
+
+func (fake *FakeGithub) AddLabelCalls(stub func(string, string) error) {
+	fake.addLabelMutex.Lock()
+	defer fake.addLabelMutex.Unlock()
+	fake.AddLabelStub = stub
+}
+
+func (fake *FakeGithub) AddLabelArgsForCall(i int) (string, string) {
+	fake.addLabelMutex.RLock()
+	defer fake.addLabelMutex.RUnlock()
+	argsForCall := fake.addLabelArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
+}
+
+func (fake *FakeGithub) AddLabelReturns(result1 error) {
+	fake.addLabelMutex.Lock()
+	defer fake.addLabelMutex.Unlock()
+	fake.AddLabelStub = nil
+	fake.addLabelReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeGithub) AddLabelReturnsOnCall(i int, result1 error) {
+	fake.addLabelMutex.Lock()
+	defer fake.addLabelMutex.Unlock()
+	fake.AddLabelStub = nil
+	if fake.addLabelReturnsOnCall == nil {
+		fake.addLabelReturnsOnCall = make(map[int]struct {
+			result1 error
+		})
+	}
+	fake.addLabelReturnsOnCall[i] = struct {
+		result1 error
+	}{result1}
 }
 
 func (fake *FakeGithub) DeletePreviousComments(arg1 string) error {
@@ -554,6 +627,8 @@ func (fake *FakeGithub) UpdateCommitStatusReturnsOnCall(i int, result1 error) {
 func (fake *FakeGithub) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.addLabelMutex.RLock()
+	defer fake.addLabelMutex.RUnlock()
 	fake.deletePreviousCommentsMutex.RLock()
 	defer fake.deletePreviousCommentsMutex.RUnlock()
 	fake.getChangedFilesMutex.RLock()

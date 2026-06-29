@@ -121,6 +121,7 @@ empty commit to the PR*.
 | `context`                  | No       | `unit-test`                          | A context to use for the status, which is prefixed by `base_context`. Defaults to `status`.                                                                   |
 | `comment`                  | No       | `hello world!`                       | A comment to add to the pull request.                                                                                                                         |
 | `comment_file`             | No       | `my-output/comment.txt`              | Path to file containing a comment to add to the pull request (e.g. output of `terraform plan`).                                                               |
+| `label`                    | No       | `ready-to-merge`                     | A label to add to the pull request.                                                                                                                           |
 | `target_url`               | No       | `$ATC_EXTERNAL_URL/builds/$BUILD_ID` | The target URL for the status, where users are sent when clicking details (defaults to the Concourse build page).                                             |
 | `description`              | No       | `Concourse CI build failed`          | The description status on the specified pull request.                                                                                                         |
 | `description_file`         | No       | `my-output/description.txt`          | Path to file containing the description status to add to the pull request                                                                                     |
@@ -197,7 +198,7 @@ Ref the above, here are some examples of running `check` against large repositor
 
 For the other two operations the costing is a bit easier:
 - `get`: Fixed cost of 1. Fetches the pull request at the given commit.
-- `put`: Uses the V3 API and has a min cost of 1, +1 for each of `status`, `comment` and `comment_file` etc.
+- `put`: Uses the V3 API and has a min cost of 1, +1 for each of `status`, `comment`, `comment_file`, `label` etc.
 
 ## Migrating
 
@@ -241,7 +242,6 @@ If you are coming from [jtarchie/github-pullrequest-resource][original-resource]
   - `git.*` (with the exception of `git_depth`, see above)
 - `put`:
   - `merge.*`
-  - `label`
 
 Note that if you are migrating from the original resource on a Concourse version prior to `v5.0.0`, you might
 see an error `failed to unmarshal request: json: unknown field "ref"`. The solution is to rename the resource
